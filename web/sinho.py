@@ -1,14 +1,17 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 # Detecting traffic light using HoughCircles - red, yellow, green
 import cv2
 import rospy
 import numpy as np
+from std_msgs.msg import Int8
 
 CIRCLE_SIZE = 3000
-
 
 def traffic_light(frame):
     pub_sinho = rospy.Publisher('/SinHo_msg', Int8, queue_size=5)
     SinHo_msg = 0
+    pub_sinho.publish(SinHo_msg)
     # bluring for eliminate noises
     img = frame.copy()
 
@@ -32,9 +35,9 @@ def traffic_light(frame):
     upperRed = np.array([10, 255, 255])
     lowerYellow = np.array([20, 100, 50])
     upperYellow = np.array([35, 255, 255])
-    lowerGreen = np.array([46, 86, 50])
-    upperGreen = np.array([76, 255, 255])
-    #
+    lowerGreen = np.array([46, 65, 50])
+    upperGreen = np.array([90, 255, 255])
+    #81 245 253 / 165 2 255
 
     # Threshold the HSV image to get three of colors
     maskR = cv2.inRange(hsv, lowerRed, upperRed)
@@ -63,7 +66,7 @@ def traffic_light(frame):
     # If green color detected, find circle from green mask image and show 'green' text
     if maskG.any():
         circles = cv2.HoughCircles(maskG, cv2.HOUGH_GRADIENT, 4, 20,
-                                   param1=100, param2=100, minRadius=0, maxRadius=0)
+                                   param1=40, param2=40, minRadius=0, maxRadius=10)
         if circles is not None:
             circles = np.uint16(np.around(circles))
             for i in circles[0, :]:
@@ -71,7 +74,7 @@ def traffic_light(frame):
                 print('go')
                 #input ros code
                 SinHo_msg = 1
-                pub_sinho(SinHo_msg)
+                pub_sinho.publish(SinHo_msg)
                 cv2.circle(img, (i[0], i[1]), i[2], (0, 255, 0), 2)
                 # put text in detected yellow circle
                 cv2.putText(img, "green", (i[0], i[1]), 1, 1.5, (255, 255, 255), 2)

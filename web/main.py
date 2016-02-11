@@ -9,7 +9,7 @@ from sensor_msgs.msg import LaserScan
 pub_twist = rospy.Publisher('/cmd_vel', Twist, queue_size=5)
 pub_stage = rospy.Publisher('/stage', Int8, queue_size=5)
 global stage
-stage = 100 #(0=신호, 1=삼거리, 2=공사, 3=주차, 4=차단바, 5=터널, 100=라인트레이싱)
+stage = 0 #(0=신호, 1=삼거리, 2=공사, 3=주차, 4=차단바, 5=터널, 100=라인트레이싱)
 
 def t_move(linear, angular):
     twist = Twist()
@@ -18,10 +18,9 @@ def avg(data):
 	return 	sum(data)/(len(data)-data.count(0)+0.01)
 
 def SinHo(sinho_msg):
-    print("sinho")
     global stage
     #초록불을 받았다면
-    if(stage == 100):
+    if(sinho_msg.data == 1):
         stage = 100
         pub_stage.publish(stage)
 
@@ -102,7 +101,9 @@ print(stage, " is stage")
 pub_stage.publish(stage)
 print("test2")
 rospy.Subscriber('/SinHo_msg', Int8, SinHo)
+print("test2")
 rospy.Subscriber('/SamGeoRi_msg', Int8, SamGeoRi)
+print("test2")
 rospy.Subscriber('/GongSa_msg', Int8, GongSa)
 rospy.Subscriber("/scan" , LaserScan , GongSa_move)
 rospy.Subscriber('/JuCha_msg', Int8, JuCha)

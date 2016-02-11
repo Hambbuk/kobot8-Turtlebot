@@ -148,3 +148,5 @@ while True:
 video.release()
 cv2.destroyAllWindows()
 
+rospy.Subscriber('/stage', Int8, line)
+rospy.spin()
