@@ -17,7 +17,9 @@ def onMouse(event, x, y, flags, param):
         clicked = True
 
 if __name__ == '__main__':
-    cameraCapture = cv2.VideoCapture(2)
+    cameraCapture = cv2.VideoCapture(1)
+    cameraCapture.set(3, 640)
+    cameraCapture.set(4, 360)
     cv2.namedWindow('camera')
     cv2.setMouseCallback('camera', onMouse)
 

@@ -5,7 +5,9 @@ import numpy as np
 # kind = int(input())
 
 
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(1)
+cap.set(3, 640)
+cap.set(4, 360)
 
 # sign = ['park','left','right','turnel']
 
@@ -27,31 +29,32 @@ def template_matching(frame,template, val):
 if __name__ == '__main__':
 
     while True:
+        #cap.set(3, 640)
+        #cap.set(4, 360)
         _, frame = cap.read()
-
-        M = np.ones(frame.shape, dtype="uint8") * 50
-        subtracted = cv2.subtract(frame, M)
-        cv2.imshow('d', subtracted)
+        #M = np.ones(frame.shape, dtype="uint8") * 50
+        #subtracted = cv2.subtract(frame, M)
+        #cv2.imshow('d', subtracted)
 
         copy_frame1 = frame.copy()
         copy_frame2 = frame.copy()
         copy_frame3 = frame.copy()
         copy_frame4 = frame.copy()
 
-        # park_template = cv2.imread("표지판.png", cv2.IMREAD_GRAYSCALE)
-        # template_matching(copy_frame1, park_template, 0)
+        park_template = cv2.imread("park_sign.png", cv2.IMREAD_GRAYSCALE)
+        template_matching(copy_frame1, park_template, 0)
 
-        left_template = cv2.imread("left.png", cv2.IMREAD_GRAYSCALE)
-        template_matching(copy_frame2, left_template, 1)
+        #left_template = cv2.imread("left.png", cv2.IMREAD_GRAYSCALE)
+        #template_matching(copy_frame2, left_template, 1)
 
         # right_template = cv2.imread("right.png", cv2.IMREAD_GRAYSCALE)
         # template_matching(copy_frame3, right_template, 2)
 
-        # turnel_template = cv2.imread("터널.png", cv2.IMREAD_GRAYSCALE)
+        # turnel_template = cv2.imread("tunnel.png", cv2.IMREAD_GRAYSCALE)
         # template_matching(copy_frame4, turnel_template, 3)
 
-        # cv2.imshow('copy_frame1', copy_frame1)
-        cv2.imshow('copy_frame2', copy_frame2)
+        cv2.imshow('copy_frame1', copy_frame1)
+        #cv2.imshow('copy_frame2', copy_frame2)
         # cv2.imshow('copy_frame3', copy_frame3)
         # cv2.imshow('copy_frame4', copy_frame4)
 

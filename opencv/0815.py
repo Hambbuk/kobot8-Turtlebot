@@ -6,8 +6,7 @@ from geometry_msgs.msg import Twist
 pub = rospy.Publisher('/cmd_vel', Twist, queue_size=5)
 
 lastError = 0
-MAX_VEL = 0.12
-
+MAX_VEL = 0.1
 def t_move(linear, angular):
     twist = Twist()
     twist.linear.x = linear
@@ -22,9 +21,6 @@ s_list = [(999, 999)]
 
 while True:
     ret, orig_frame = video.read()
-    if not ret:
-        video = cv2.VideoCapture(0)
-        continue
 
     draw_temp = orig_frame.copy()
 
@@ -32,14 +28,17 @@ while True:
 
     draw_temp = cuttingImg
 
-    M = np.ones(draw_temp.shape, dtype="uint8") * 30
+    M = np.ones(draw_temp.shape, dtype="uint8") * 70
     draw_temp = cv2.subtract(draw_temp, M)
 
     frame = cv2.GaussianBlur(draw_temp, (5, 5), 0)
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     # gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    low_yellow = np.array([20, 100, 50])
-    up_yellow = np.array([35, 255, 255])
+    #low_yellow = np.array([20, 100, 50])
+    #up_yellow = np.array([35, 255, 255])
+    low_yellow = np.array([20, 35, 60])
+    up_yellow = np.array([40, 255, 255])
+    
     mask = cv2.inRange(hsv, low_yellow, up_yellow)
     edges = cv2.Canny(mask, 75, 150)
 
@@ -63,12 +62,14 @@ while True:
 
     lines = cv2.HoughLinesP(edges, 1, np.pi / 360, 100,100, maxLineGap=50)
     if lines is not None:
-	del s_list[:]
         for line in lines:
             x1, y1, x2, y2 = line[0]
-            s_list.append((x1,y1))
-            s_list.append((x2,y2))
-
+            if min(x1, x2) < 250:
+                pass
+            else:
+                del s_list[:]
+                s_list.append((x1,y1))
+                s_list.append((x2,y2))
         cv2.circle(frame, min(s_list), 10, (255,255,0), -1)
         cv2.line(frame, (x1, y1), (x2, y2), (0, 0, 255), 4)
 
@@ -77,13 +78,14 @@ while True:
     (x1, y1) = min(s_list)
     (x2, y2) = max(f_list)
     ave = (x1 + x2) / 2
-    cv2.circle(frame, ((x1+x2)//2,(y1+y2)//2) , 10, (200,200,25), -1)
+    #print(x1)
+    cv2.circle(frame, ((x1+x2)//2,(y1+y2)//2) , 10, (200,0,25), -1)
     #print("s_list : ", min(s_list))
     error = ave-315
-    #print(error, " error")
-    Kp = 0.004
-    Kd = 0.025
-    print(error)
+    print(error, " error")
+    Kp = 0.007
+    Kd = 0.04
+    #print(error)
     angular_z = Kp * error + Kd * (error - lastError)
     #print(angular_z, "is angular_z")
     lastError = error
@@ -93,7 +95,9 @@ while True:
     #print(angular_z, " is twist angular_z")
     
     t_move(linear_x, angular_z)
+    #t_move(0,0)
     cv2.imshow("frame", frame)
+    print(frame.shape)
 
     key = cv2.waitKey(25)
     if key == 27:
