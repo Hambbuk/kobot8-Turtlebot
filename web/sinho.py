@@ -78,6 +78,7 @@ def traffic_light(frame):
                 cv2.circle(img, (i[0], i[1]), i[2], (0, 255, 0), 2)
                 # put text in detected yellow circle
                 cv2.putText(img, "green", (i[0], i[1]), 1, 1.5, (255, 255, 255), 2)
+            return 1
                 
             traffic_stat = "green"
 

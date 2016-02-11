@@ -3,9 +3,9 @@ import numpy as np
 import rospy
 import sign
 import sinho
-from std_msgs.msg import Float32
-pub_linear = rospy.Publish('linear', Float64, queue_size=5)
-pub_angular = rospy.Publish('angular', Float64, queue_size=5)
+from std_msgs.msg import Float64
+pub_linear = rospy.Publisher('linear', Float64, queue_size=5)
+pub_angular = rospy.Publisher('angular', Float64, queue_size=5)
 lastError = 0
 MAX_VEL = 0.12
 
@@ -19,8 +19,6 @@ s_list = [(999, 999)]
 frame_count_w = 0
 frame_count_y = 0
 
-cnt = 0
-
 while True:
     frame_count_w += 1
     frame_count_y += 1
@@ -28,13 +26,10 @@ while True:
     if not ret:
         video = cv2.VideoCapture(0)
         continue
+
+    #sinho.traffic_light(orig_frame)
     
-    if cnt == 0:
-        sinho.traffic_light(orig_frame)
-        print("sinho test")
-        cnt += 1
-    
-    sign._main(orig_frame)
+    #sign._main(orig_frame)
     draw_temp = orig_frame.copy()
     cuttingImg = draw_temp[360:, :]
     y_ROI = draw_temp[360:, :250]
