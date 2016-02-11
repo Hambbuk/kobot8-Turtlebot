@@ -13,7 +13,7 @@ def t_move(linear, angular):
     pub.publish(twist)
 
 video = cv2.VideoCapture(-1)
-#video.set(5,20)
+video.set(5,20)
 rospy.init_node('line_test')
 
 f_list = [(-1, -1)]
@@ -35,7 +35,7 @@ while True:
     y_ROI = draw_temp[360:, :250]
     w_ROI = draw_temp[360:, 310:]
 
-    M = np.ones(y_ROI.shape, dtype="uint8") * 70
+    M = np.ones(y_ROI.shape, dtype="uint8") * 90
     y_ROI = cv2.subtract(y_ROI, M)
 
     minLAB = np.array([84, 110, 128])
@@ -43,16 +43,17 @@ while True:
 
     # Convert the BGR image to other color spaces
     imageLAB = cv2.cvtColor(y_ROI, cv2.COLOR_BGR2LAB)
+    imageLAB = cv2.GaussianBlur(imageLAB, (5, 5), 0)
 
     maskLABYellow = cv2.inRange(imageLAB, minLAB, maxLAB)
-    maskLABYellow = cv2.erode(maskLABYellow, None, iterations=2)
-    maskLABYellow = cv2.dilate(maskLABYellow, None, iterations=2)
+    maskLABYellow = cv2.erode(maskLABYellow, None, iterations=1)
+    maskLABYellow = cv2.dilate(maskLABYellow, None, iterations=3)
 
     resultLAB = cv2.bitwise_and(y_ROI, y_ROI, mask=maskLABYellow)
     edges = cv2.Canny(resultLAB, 75, 150)
     cv2.imshow('yellow edges', edges)
 
-    lines = cv2.HoughLinesP(edges, 1, np.pi / 360, 100, 40, maxLineGap=5)
+    lines = cv2.HoughLinesP(edges, 1, np.pi / 360, 50, 10, maxLineGap=150)
 
     if lines is not None:
         del f_list[:]
@@ -67,12 +68,13 @@ while True:
     #    del f_list[:]
     #    f_list.append((0,1))
 
-    M1 = np.ones(w_ROI.shape, dtype="uint8") * 80
+    M1 = np.ones(w_ROI.shape, dtype="uint8") * 90
     w_ROI = cv2.subtract(w_ROI, M1)
     minLAB = np.array([89, 112, 104])
     maxLAB = np.array([198, 142, 137])
 
     imageLAB = cv2.cvtColor(w_ROI, cv2.COLOR_BGR2LAB)
+    imageLAB = cv2.GaussianBlur(imageLAB, (5, 5), 0)
 
     maskLABWhite = cv2.inRange(imageLAB, minLAB, maxLAB)
     maskLABWhite = cv2.erode(maskLABWhite, None, iterations=1)
@@ -81,7 +83,7 @@ while True:
     resultLAB1 = cv2.bitwise_and(w_ROI, w_ROI, mask=maskLABWhite)
     edges = cv2.Canny(resultLAB1, 75, 150)
     cv2.imshow('white edges', edges)
-    lines = cv2.HoughLinesP(edges, 1, np.pi / 360, 100, 40, maxLineGap=5)
+    lines = cv2.HoughLinesP(edges, 1, np.pi / 360, 50, 10, maxLineGap=150)
 
     if lines is not None:
         del s_list[:]
@@ -119,7 +121,7 @@ while True:
     cv2.imshow('wroi', w_ROI)
 
     #print("s_list : ", min(s_list))
-    error = ave-290
+    error = ave-300
     print(error)
     #print(error, " error")
     Kp = 0.0055
