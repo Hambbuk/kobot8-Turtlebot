@@ -30,14 +30,13 @@ def line(msg):
     lastError = 0
     MAX_VEL = 0.12
     global flag
-
+    if msg.data == 100:
+        flag = 100
     frame_count_w = 0
     frame_count_y = 0
-
+    
     while True:
         print(flag)
-        if msg.data == 100:
-            flag = 100
         frame_count_w += 1
         frame_count_y += 1
         ret, orig_frame = video.read()

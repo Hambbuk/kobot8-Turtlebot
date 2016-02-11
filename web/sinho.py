@@ -99,10 +99,10 @@ def traffic_light(frame):
     #     rectangles = cv2.
     print(traffic_stat)
 
-    cv2.imshow('traffic_light', img)
+    # cv2.imshow('traffic_light', img)
     # cv2.imshow('Yellow', resY)
-    cv2.imshow('green', resG)
-    cv2.imshow('Red', resR)
+    # cv2.imshow('green', resG)
+    # cv2.imshow('Red', resR)
 
 #if __name__ == '__main__':
 #   cap = cv2.VideoCapture(2)
