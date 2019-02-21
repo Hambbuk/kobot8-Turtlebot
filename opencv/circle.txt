@@ -1,0 +1,15 @@
+#신호등 색 검출하기
+
+http://blog.naver.com/PostView.nhn?blogId=pckbj123&logNo=100204280982
+https://hoony-gunputer.tistory.com/94
+    
+ HSV: 색(Hue), 채도(Saturation), 명도(Value)로 표현된 색기둥
+ GrayScale: 회색조(흑백)
+ BGR: 파란색, 초록색, 빨간색의 강도에 따라 색을 표현
+    
+ * inRange()함수: 검사할 이미지인 src arr를 픽셀별로 검사하여 하한값(lowerb)과 상한값(upperb) 사이에 들어오면 흰색(255)으로 표시하고 
+                 그렇지 않은 픽셀은 검은색(0)으로 표시한 이미지를 4번째 인자에 담게된다(마스크)
+    -> dst=cv.inRange(src, lowerb, upperb[, dst])
+    
+ * bitwise_and()함수: 두 이미지를 비교하여 둘다 특정색인 부분만(AND 연산) 특정색으로 나타남
+    
