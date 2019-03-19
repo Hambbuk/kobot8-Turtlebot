@@ -28,12 +28,18 @@ while True:
     maskY = cv2.inRange(hsv, lowerYellow, upperYellow)
     maskG = cv2.inRange(hsv, lowerGreen, upperGreen)
     maskR = cv2.inRange(hsv, lowerRed, upperRed)
-
     # Bitwise-AND mask and original image
     resY = cv2.bitwise_and(frame, frame, mask=maskY)
     resG = cv2.bitwise_and(frame, frame, mask=maskG)
     resR = cv2.bitwise_and(frame, frame, mask=maskR)
 
+
+    if maskY.any():
+        print("yellow")
+    if maskG.any():
+        print("green")
+    if maskR.any():
+        print("red")
 
     cv2.imshow('frame',frame)
     cv2.imshow('hsv', hsv)
@@ -45,5 +51,3 @@ while True:
     k = cv2.waitKey(5) & 0xFF
     if k == 27:
         break
-
-cv2.destroyAllWindows()
