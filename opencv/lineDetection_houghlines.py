@@ -27,12 +27,13 @@ while True:
 
     lines = cv2.HoughLines(edges, 1, np.pi / 180, 3)
 
-    y_theta = 0
+    y_theta = 0     # variable of degree y ( 0' ~ 180' )
+
     if lines is not None:
         for rho, theta in lines[0]:
             y_theta = 90-(theta * 180 / np.pi)
             if y_theta<0 : y_theta+=180
-            y_theta_real = y_theta*np.pi/180
+            y_theta_real = y_theta*np.pi/180    # variable of degrre y for drawing lines ( 0 ~ pi )
             # print('yellow-', 'rho: ', rho, '\t\ttheta: ' ,theta)
             a = np.cos(theta)
             b = np.sin(theta)
@@ -62,12 +63,13 @@ while True:
     edges = cv2.Canny(white_mask, 50, 150, apertureSize=3)
 
     lines = cv2.HoughLines(edges, 1, np.pi / 180, 3)
-    w_theta = np.pi/2
+
+    w_theta = 0     # variable of degree w ( 0' ~ 180' )
     if lines is not None:
         for rho, theta in lines[0]:
             w_theta = 90-(theta* 180 / np.pi)
             if w_theta<0 : w_theta+=180
-            w_theta_real = w_theta*np.pi /180
+            w_theta_real = w_theta*np.pi /180    # variable of degrre w for drawing lines ( 0 ~ pi )
             # print('white-', 'rho: ', rho, '\t\ttheta: ', theta)
             a = np.cos(theta)
             b = np.sin(theta)
@@ -79,13 +81,13 @@ while True:
             y2 = int(y0 - 1000 * (a))
 
         cv2.line(draw_temp, (x1, y1), (x2, y2), (255, 0, 0), 2)     #detect white -> draw blue
-    else:
+    else:   # default average degree 90'
         w_theta_real = np.pi/2
         w_theta = 90
 
     print('white ', w_theta)
-    ave_theta = (y_theta + w_theta)/2
-    ave_theta_real = (y_theta_real + w_theta_real)/2
+    ave_theta = (y_theta + w_theta)/2        # variable of average degree ( 0' ~ 180' )
+    ave_theta_real = (y_theta_real + w_theta_real)/2     # variable of average degree for drawing lines ( 0 ~ pi )
 
 
 
