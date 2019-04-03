@@ -13,3 +13,11 @@ https://hoony-gunputer.tistory.com/94
     
  * bitwise_and()함수: 두 이미지를 비교하여 둘다 특정색인 부분만(AND 연산) 특정색으로 나타남
     
+ * cv2.approxPolyDP(curve, epsilon, closed[, approxCurve]) → approxCurve
+    Parameters:	
+        curve – contours point array
+        epsilon – original cuve와 근사치의 최대거리. 최대거리가 클 수록 더 먼 곳의 Point까지 고려하기 때문에 Point수가 줄어듬.
+        closed – 폐곡선 여부
+
+    Returns:	
+    근사치가 적용된 contours point array
