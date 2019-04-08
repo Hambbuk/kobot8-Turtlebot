@@ -21,6 +21,18 @@ https://hoony-gunputer.tistory.com/94
 
     Returns:	
     근사치가 적용된 contours point array
+    
+ *  Cv.HoughCircles(그레이스케일, 메모리 저장소, 계산 방법, 분해능, 최소거리, Edge 임계값, 중심 임계값, 최소반지름, 최대반지름)입니다.
+
+    Parameters:
+        계산 방법은 HoughCirclesMethod.Gradient만 지원합니다.
+        분해능은 화면 최대크기에 대한 축소율입니다. 1을 사용할 경우 이미지와 동일한 크기를 사용합니다. 2를 사용할 경우 이미지의 절반 크기로 사용합니다.  
+        최소거리는 원과 원 사이의 최소한의 거리입니다.
+        Edge 임계값은 Canny Edge의 상위 임계값입니다. 하위 임계값은 상위 임계값의 절반으로 자동으로 설정됩니다.
+        중심 임계값은 CV_HOUGH_GRADIENT에 적용된 중심 Histogram에 대한 임계값입니다.
+        최소반지름, 최대반지름은 검출될 원의 반지름의 범위입니다. 0을 입력 시, 검출 할 수 있는 최소, 최대 반경으로 모든 원을 검색합니다.
+    Tip : Edge 임계값이 낮을 수록 같은 위치의 더 많은 원을 검출합니다.
+    Tip : 중심 임계값이 낮을 수록 다른 위치의 더 많은 원을 검출합니다.
 
 https://github.com/ROBOTIS-GIT/turtlebot3_autorace/blob/master/turtlebot3_autorace_detect/nodes/detect_traffic_light
 
