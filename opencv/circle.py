@@ -21,8 +21,8 @@ while True:
     # define range of color in HSV
     lowerYellow = np.array([20, 90, 100])
     upperYellow = np.array([32, 255, 255])
-    lowerGreen = np.array([45, 70, 80])
-    upperGreen = np.array([95, 255, 255])
+    lowerGreen = np.array([45, 100, 100])
+    upperGreen = np.array([93, 255, 210])
     lowerRed = np.array([140, 100, 100])
     upperRed = np.array([180, 255, 255])
 
@@ -49,10 +49,10 @@ while True:
     resG = cv2.bitwise_and(frame, frame, mask=maskG)
     resR = cv2.bitwise_and(frame, frame, mask=maskR)
 
-    traffic_stat=0
+    traffic_stat=""
 
     if maskY.any():
-        print("yellow")
+        # print("yellow")
         # cimg = cv2.cvtColor(maskY, cv2.COLOR_BGR2GRAY)
         circles = cv2.HoughCircles(maskY, cv2.HOUGH_GRADIENT, 4, 20,
                                    param1=100, param2=100, minRadius=0, maxRadius=0)
@@ -61,11 +61,11 @@ while True:
             for i in circles[0, :]:
                 # draw the outer circle
                 cv2.circle(img, (i[0], i[1]), i[2], (0, 255, 0), 2)
-
-            traffic_stat = 1
+                cv2.putText(img, "yellow", (i[0], i[1]), 1, 1.5, (255, 255, 255), 2)
+            traffic_stat = "yellow"
 
     if maskG.any():
-        print("green")
+        # print("green")
         # cimg = cv2.cvtColor(maskY, cv2.COLOR_BGR2GRAY)
         circles = cv2.HoughCircles(maskG, cv2.HOUGH_GRADIENT, 4, 20,
                                    param1=100, param2=100, minRadius=0, maxRadius=0)
@@ -74,11 +74,11 @@ while True:
             for i in circles[0, :]:
                 # draw the outer circle
                 cv2.circle(img, (i[0], i[1]), i[2], (0, 255, 0), 2)
-
-            traffic_stat = 2
+                cv2.putText(img, "green", (i[0], i[1]), 1, 1.5, (255, 255, 255), 2)
+            traffic_stat = "green"
 
     if maskR.any():
-        print("red")
+        # print("red")
         # cimg = cv2.cvtColor(maskY, cv2.COLOR_BGR2GRAY)
         circles = cv2.HoughCircles(maskR, cv2.HOUGH_GRADIENT, 4, 20,
                                    param1=100, param2=100, minRadius=0, maxRadius=0)
@@ -87,10 +87,14 @@ while True:
             for i in circles[0, :]:
                 # draw the outer circle
                 cv2.circle(img, (i[0], i[1]), i[2], (0, 255, 0), 2)
+                cv2.putText(img, "red", (i[0], i[1]), 1, 1.5, (255, 255, 255), 2)
 
-            traffic_stat = 3
+
+            traffic_stat = "red"
+
 
     print(traffic_stat)
+
 
     cv2.imshow('img',img)
 
