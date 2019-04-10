@@ -1,12 +1,13 @@
 import cv2
 import numpy as np
 
-cap = cv2.VideoCapture(3)
+
+cap = cv2.VideoCapture(2)
 CIRCLE_SIZE = 3000
 
 while True:
 
-    # covert video frame to HSV image
+    # covert video frame to HSV
     _, frame = cap.read()
 
     #bluring for eliminate noises
@@ -18,12 +19,12 @@ while True:
     hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 
     # define range of color in HSV
-    lowerYellow = np.array([15, 90, 100])
-    upperYellow = np.array([30, 255, 255])
-    lowerGreen = np.array([55, 100, 100])
-    upperGreen = np.array([80, 255, 255])
-    lowerRed = np.array([-15, 180, 100])
-    upperRed = np.array([10, 255, 255])
+    lowerYellow = np.array([20, 90, 100])
+    upperYellow = np.array([32, 255, 255])
+    lowerGreen = np.array([40, 100, 80])
+    upperGreen = np.array([85, 255, 255])
+    lowerRed = np.array([-15, 190, 100])
+    upperRed = np.array([8, 255, 230])
 
     #from robotis's code
     #
@@ -53,8 +54,8 @@ while True:
     if maskY.any():
         print("yellow")
         # cimg = cv2.cvtColor(maskY, cv2.COLOR_BGR2GRAY)
-        circles = cv2.HoughCircles(maskY, cv2.HOUGH_GRADIENT, 1, 10,
-                                   param1=100, param2=40, minRadius=0, maxRadius=0)
+        circles = cv2.HoughCircles(maskY, cv2.HOUGH_GRADIENT, 4, 20,
+                                   param1=100, param2=100, minRadius=0, maxRadius=0)
         if circles is not None:
             circles = np.uint16(np.around(circles))
             for i in circles[0, :]:
@@ -66,8 +67,8 @@ while True:
     if maskG.any():
         print("green")
         # cimg = cv2.cvtColor(maskY, cv2.COLOR_BGR2GRAY)
-        circles = cv2.HoughCircles(maskG, cv2.HOUGH_GRADIENT, 1, 20,
-                                   param1=60, param2=70, minRadius=0, maxRadius=0)
+        circles = cv2.HoughCircles(maskG, cv2.HOUGH_GRADIENT, 4, 20,
+                                   param1=100, param2=100, minRadius=0, maxRadius=0)
         if circles is not None:
             circles = np.uint16(np.around(circles))
             for i in circles[0, :]:
@@ -79,8 +80,8 @@ while True:
     if maskR.any():
         print("red")
         # cimg = cv2.cvtColor(maskY, cv2.COLOR_BGR2GRAY)
-        circles = cv2.HoughCircles(maskR, cv2.HOUGH_GRADIENT, 1, 20,
-                                   param1=60, param2=40, minRadius=0, maxRadius=0)
+        circles = cv2.HoughCircles(maskR, cv2.HOUGH_GRADIENT, 4, 20,
+                                   param1=100, param2=100, minRadius=0, maxRadius=0)
         if circles is not None:
             circles = np.uint16(np.around(circles))
             for i in circles[0, :]:
