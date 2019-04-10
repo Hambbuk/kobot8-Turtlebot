@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 
 
-cap = cv2.VideoCapture(2)
+cap = cv2.VideoCapture(0)
 CIRCLE_SIZE = 3000
 
 while True:
@@ -21,10 +21,10 @@ while True:
     # define range of color in HSV
     lowerYellow = np.array([20, 90, 100])
     upperYellow = np.array([32, 255, 255])
-    lowerGreen = np.array([40, 100, 80])
-    upperGreen = np.array([85, 255, 255])
-    lowerRed = np.array([-15, 190, 100])
-    upperRed = np.array([8, 255, 230])
+    lowerGreen = np.array([45, 70, 80])
+    upperGreen = np.array([95, 255, 255])
+    lowerRed = np.array([140, 100, 100])
+    upperRed = np.array([180, 255, 255])
 
     #from robotis's code
     #
