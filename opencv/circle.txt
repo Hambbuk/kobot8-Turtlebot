@@ -33,6 +33,17 @@ https://hoony-gunputer.tistory.com/94
         최소반지름, 최대반지름은 검출될 원의 반지름의 범위입니다. 0을 입력 시, 검출 할 수 있는 최소, 최대 반경으로 모든 원을 검색합니다.
     Tip : Edge 임계값이 낮을 수록 같은 위치의 더 많은 원을 검출합니다.
     Tip : 중심 임계값이 낮을 수록 다른 위치의 더 많은 원을 검출합니다.
+    
+  * cv2.putText(img, text, org, font, fontSacle, color)
+    
+        Parameters:	
+            img – image
+            text – 표시할 문자열
+            org – 문자열이 표시될 위치. 문자열의 bottom-left corner점
+            font – font type. CV2.FONT_XXX
+            fontSacle – Font Size
+            color – fond color
+
 
 https://github.com/ROBOTIS-GIT/turtlebot3_autorace/blob/master/turtlebot3_autorace_detect/nodes/detect_traffic_light
 
