@@ -30,10 +30,22 @@ def callback(scan):
     Rigth_4 = scan.ranges[265:284]
     back = scan.ranges[95:264]
 
-"""
-def avg
-    l = [i for i in Front if( i is not 0 or i is not INF)]
-    avg_l = sum(l)/len(l)"""
+    #average
+    avg(Front)
+    avg(Left_1)
+    avg(Left_2)
+    avg(Left_3)
+    avg(Left_4)
+    avg(Right_1)
+    avg(Right_2)
+    avg(Right_3)
+    avg(Right_4)
+
+
+#if 0 & inf -> no count
+def avg(arr):
+    l = [i for i in arr if( i is not 0 or i is not float("inf"))]
+    return sum(l)/len(l)
 
 
 rospy.init_node('scan_values')
