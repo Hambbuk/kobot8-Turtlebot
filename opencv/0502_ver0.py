@@ -130,6 +130,7 @@ if __name__ == '__main__':
 
         key = cv2.waitKey(25)
         if key == 27:
+            t_move(0, 0)
             break
 
     video.release()
