@@ -7,7 +7,7 @@ y_data1 = []
 y_data2 = []
 w_data1 = []
 w_data2 = []
-
+pub = rospy.Publisher('/cmd_vel', Twist, queue_size=5)
 def t_move(linear, angular):
     twist=Twist()
     twist.linear.x=linear
