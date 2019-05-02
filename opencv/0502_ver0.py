@@ -32,8 +32,8 @@ if __name__ == '__main__':
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-        lower_yellow = np.array([10, 70, 100])
-        upper_yellow = np.array([45, 255, 255])
+        lower_yellow = np.array([18, 20, 190])
+        upper_yellow = np.array([48, 255, 255])
         yellow_mask = cv2.inRange(hsv, lower_yellow, upper_yellow)
         yellow_mask = cv2.erode(yellow_mask, None, iterations=1)
         yellow_mask = cv2.dilate(yellow_mask, None, iterations=1)

@@ -3,6 +3,8 @@ from sensor_msgs.msg import LaserScan
 from nav_msgs.msg import Odometry
 import numpy as np
 
+global past
+
 def callback(scan):
     Front = scan.ranges[0:14] + scan.ranges[345:359]
     Left1 = scan.ranges[15:34]
