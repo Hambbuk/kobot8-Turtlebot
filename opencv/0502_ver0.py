@@ -16,6 +16,7 @@ def b_clean(video):
         video.read()
 
 if __name__ == '__main__':
+    rospy.init_node('0502_ver0')
     video = cv2.VideoCapture(0)
     b_clean(video)
     while True:
@@ -114,13 +115,13 @@ if __name__ == '__main__':
         # cv2.line(draw_temp, (int(a_f/2-p*np.sin(ave_theta)), b_f+int(p*np.cos(ave_theta))), (int((a_f/2+p*np.sin(ave_theta))), b_f-int(p*np.cos(ave_theta))), (0, 255, 0), lineThickness)
 
         if ave_theta >= 95:
-            print("좌측 회전")
+            print("left")
             t_move(0.15, 0.2)
         elif ave_theta <= 85:
-            print("우측 회전")
-            t_move(0.15, 0.2)
+            print("right")
+            t_move(0.15, -0.2)
         else:
-            print("직진")
+            print("go")
             t_move(0.15, 0)
 
 
