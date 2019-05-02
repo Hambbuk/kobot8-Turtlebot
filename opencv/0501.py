@@ -60,7 +60,7 @@ def b_clean(video):
 
 
 if __name__ == '__main__':
-    video = cv2.VideoCapture(1)
+    video = cv2.VideoCapture(0)
     b_clean(video)
 
     video.set(3, 320)
@@ -73,7 +73,7 @@ if __name__ == '__main__':
         cnt = 0
         ret, orig_frame = video.read()
         if not ret:
-            video = cv2.VideoCapture(1)
+            video = cv2.VideoCapture(0)
             continue
 
 

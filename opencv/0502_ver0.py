@@ -16,13 +16,14 @@ def b_clean(video):
         video.read()
 
 if __name__ == '__main__':
-    rospy.init_node('0502_ver0')
+    rospy.init_node('line_test')
     video = cv2.VideoCapture(0)
-    b_clean(video)
+    video.set(3, 640)
+    video.set(4, 480)
     while True:
         ret, orig_frame = video.read()
         if not ret:
-            video = cv2.VideoCapture(0)
+            video = cv2.VideoCapture(-1)
             continue
 
         draw_temp = orig_frame.copy()
@@ -67,7 +68,7 @@ if __name__ == '__main__':
 
         print('yellow ', y_theta)
 
-        sensitivity = 15
+        sensitivity = 20
         lower_white = np.array([0, 0, 255 - sensitivity])
         upper_white = np.array([255, sensitivity, 255])
         white_mask = cv2.inRange(hsv, lower_white, upper_white)
