@@ -1,3 +1,5 @@
+# Feature matching code to detect parking sign, blocking bar using ORB.
+
 import numpy as np
 import cv2
 # from matplotlib import pyplot as plt
