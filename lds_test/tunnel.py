@@ -2,6 +2,8 @@ import rospy
 import tf
 from sensor_msgs.msg import LaserScan
 from nav_msgs.msg import Odometry
+from sensor_msgs.msg import Imu
+from geometry_msgs.msg import Twist
 import numpy as np
 from tf.transformations import euler_from_quaternion, quaternion_from_euler
 
@@ -56,7 +58,7 @@ def avge(arr):
             continue
         else:
             l.append(i)
-    return sum(l)/len(l)
+    return sum(l)/(len(l)+0.01)
 
 #################################################################################################################################
 #check left wall
@@ -92,11 +94,30 @@ def scan_Front_Wall(arr):
 
 #################################################################################################################################
 #Subscriber odom
-def call_test(odom):
+def call_test(imu):
     r_late = rospy.Rate(10)
-    list = [odom.pose.pose.orientation.x, odom.pose.pose.orientation.y, odom.pose.pose.orientation.z, odom.pose.pose.orientation.w]
-    theta = euler_from_quaternion(list)
-    print(theta[2])
+    #list = [imu.orientation.x, odom.pose.pose.orientation.y, odom.pose.pose.orientation.z, odom.pose.pose.orientation.w]
+	x = imu.orientation.x
+	y = imu.orientation.y
+	z = imu.orientation.z
+	w = imu.orientation.w
+
+	ysqr = y * y
+	
+	t0 = +2.0 * (w * x + y * z)
+	t1 = +1.0 - 2.0 * (x * x + ysqr)
+	X = math.degrees(math.atan2(t0, t1))
+	
+	t2 = +2.0 * (w * y - z * x)
+	t2 = +1.0 if t2 > +1.0 else t2
+	t2 = -1.0 if t2 < -1.0 else t2
+	Y = math.degrees(math.asin(t2))
+	
+	t3 = +2.0 * (w * z + x * y)
+	t4 = +1.0 - 2.0 * (ysqr + z * z)
+	Z = math.degrees(math.atan2(t3, t4))
+    #theta = euler_from_quaternion(list)
+    print(Z)
     r_late.sleep()
 
 #store_pose
@@ -155,7 +176,8 @@ def destination5(data1):
 
 def recive():
     rospy.Subscriber('/scan', LaserScan, callback)
-    rospy.Subscriber('/odom', Odometry, call_test)
+    #rospy.Subscriber('/odom', Odometry, call_test)
+	rospy.Subscriber('/imu', Imu, callback_test)
     rospy.spin()
 
 if __name__ == '__main__':
