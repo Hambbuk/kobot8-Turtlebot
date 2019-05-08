@@ -27,7 +27,7 @@ global past_number
 
 global bool_way
 
-
+#data = [Front_avg, Left_avg, Front_Left_avg, Front_Right_avg, Right_avg, Left_Beside_avg, Right_Beside_avg, Back_avg, real_Front_avg, Left_side_avg, Right_side_avg]
 
 bool_way = [0,0]
 
@@ -109,7 +109,6 @@ def callback1(data):
 
 
 
-
 	if scan_wall(Lidar3) == 1:		# If there is wall in front of turtlebot or block way, turn back
 		rospy.loginfo('strange wall')
 		while check <= 100:
@@ -120,7 +119,7 @@ def callback1(data):
 	else:
 
 		if bool_way[0] == 1:		# If there is wall beside the turtlebot
-
+            #앞의 평균값이 벽보다 멀면 저장하고 왔던곳인지 체크
 			if Lidar[8] <= wall+0.03 and Lidar[8] > 0: 	# If turtlebot is in uncertain position with blocked wall
 				store_pose()
 				remind_past()
