@@ -1,4 +1,4 @@
-# Detecting traffic light - red, yellow, green 
+# Detecting traffic light using HoughCircles - red, yellow, green 
 import cv2
 import numpy as np
 
