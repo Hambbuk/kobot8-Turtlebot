@@ -1,9 +1,19 @@
 import rospy
+import tf
 from sensor_msgs.msg import LaserScan
 from nav_msgs.msg import Odometry
 import numpy as np
+from tf.transformations import euler_from_quaternion, quaternion_from_euler
 
-global post
+
+global pose
+global past
+global dot
+global cnt
+cnt = 0
+dot = [0, 0]
+past = [[0, 0]]
+pose = [0, 0]
 rospy.init_node('scan_values')
 
 #################################################################################################################################
@@ -81,6 +91,33 @@ def scan_Front_Wall(arr):
         return 0;
 
 #################################################################################################################################
+#Subscriber odom
+def call_test(odom):
+    r_late = rospy.Rate(10)
+    list = [odom.pose.pose.orientation.x, odom.pose.pose.orientation.y, odom.pose.pose.orientation.z, odom.pose.pose.orientation.w]
+    theta = euler_from_quaternion(list)
+    print(theta[2])
+    r_late.sleep()
+
+#store_pose
+def store_pose():
+	global past
+	global pose
+	global cnt
+
+	if count == 0:
+		if flag2==0:
+			copy_pose = copy.copy(pose)	# Store the place coordinate which turtlebot must avoid
+			past.append(copy_pose)		# ex) entrance of tunnel
+			past_number.append(0)
+			num = num+1
+			flag2 = 1
+
+#past pose check
+def past_check():
+    return 0;
+
+#################################################################################################################################
 #same place rotation
 def destination1(data1):
 	if data1==1:
@@ -118,7 +155,7 @@ def destination5(data1):
 
 def recive():
     rospy.Subscriber('/scan', LaserScan, callback)
-    rospy.Subscriber('/odom', Odometry, asdf)
+    rospy.Subscriber('/odom', Odometry, call_test)
     rospy.spin()
 
 if __name__ == '__main__':
