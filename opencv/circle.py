@@ -1,3 +1,4 @@
+# Detecting traffic light - red, yellow, green 
 import cv2
 import numpy as np
 
@@ -47,7 +48,8 @@ while True:
     resR = cv2.bitwise_and(frame, frame, mask=maskR)
 
     traffic_stat=""
-
+    
+    #If yellow color detected, find circle from yellow mask image and show 'yellow' text
     if maskY.any():
         circles = cv2.HoughCircles(maskY, cv2.HOUGH_GRADIENT, 4, 20,
                                    param1=100, param2=100, minRadius=0, maxRadius=0)
@@ -60,6 +62,8 @@ while True:
                 cv2.putText(img, "yellow", (i[0], i[1]), 1, 1.5, (255, 255, 255), 2)
             traffic_stat = "yellow"
 
+            
+    #If green color detected, find circle from green mask image and show 'green' text
     if maskG.any():
         circles = cv2.HoughCircles(maskG, cv2.HOUGH_GRADIENT, 4, 20,
                                    param1=100, param2=100, minRadius=0, maxRadius=0)
@@ -72,6 +76,8 @@ while True:
                 cv2.putText(img, "green", (i[0], i[1]), 1, 1.5, (255, 255, 255), 2)
             traffic_stat = "green"
 
+    
+    #If red color detected, find circle from red mask image and show 'red' text
     if maskR.any():
         circles = cv2.HoughCircles(maskR, cv2.HOUGH_GRADIENT, 4, 20,
                                    param1=100, param2=100, minRadius=0, maxRadius=0)
