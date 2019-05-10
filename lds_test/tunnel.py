@@ -56,7 +56,8 @@ def avge(arr):
             continue
         else:
             l.append(i)
-    return sum(l)/len(l)
+    #print(l)
+    return sum(l)/(len(l)+0.01)
 
 #################################################################################################################################
 #check left wall
@@ -88,7 +89,7 @@ def scan_Front_Wall(arr):
     if cnt >= 2:
         return 1
     else:
-        return 0;
+        return 0;	
 
 #################################################################################################################################
 #Subscriber odom
@@ -96,7 +97,7 @@ def call_test(odom):
     r_late = rospy.Rate(10)
     list = [odom.pose.pose.orientation.x, odom.pose.pose.orientation.y, odom.pose.pose.orientation.z, odom.pose.pose.orientation.w]
     theta = euler_from_quaternion(list)
-    print(theta[2])
+    print(theta)
     r_late.sleep()
 
 #store_pose
@@ -115,6 +116,7 @@ def store_pose():
 
 #past pose check
 def past_check():
+    
     return 0;
 
 #################################################################################################################################
