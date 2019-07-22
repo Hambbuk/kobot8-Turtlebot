@@ -195,3 +195,4 @@ include_directories(
 # catkin_add_nosetests(test)
 add_executable(navigation_goals src/navigation_goals.cpp)
 target_link_libraries(navigation_goals ${catkin_LIBRARIES})
+
