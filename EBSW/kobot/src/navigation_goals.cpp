@@ -9,12 +9,14 @@
 
 typedef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> MoveBaseClient;
 
+float received_msg;
 float dx, dy;
 int sector_number;
 float sector_x, sector_y;
 float current_x = 0, current_y = 0;
 char current_number = '0';
 
+//키입력
 int getch()
 {
   static struct termios oldt, newt;
