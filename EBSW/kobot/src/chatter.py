@@ -1,10 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import rospy
-import std_msgs/Float32
+from std_msgs.msg import Float32
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import db
+from kobot.msg import Msg
+
+global x1, y1, x2, y2, x3, y3, sector_num, s1_pm100, s2_pm100, s3_pm100
 
 #Firebase database 연동
 cred = credentials.Certificate('/home/kmucs/Downloads/ebsw.json')
@@ -12,38 +15,78 @@ firebase_admin.initialize_app(cred,{
     'databaseURL' : 'https://ebsw-283e9.firebaseio.com/'
 })
 
+def sector_chk():
+    #80보다 클때만 실행
+    global s1_pm100, s2_pm100, s3_pm100, sector_num
+    sector_num = 0;
+    arr = [s1_pm100, s2_pm100, s3_pm100]
+    max_num = max(arr)
+    if(max_num>80):
+        idx = arr.index(max_num)
+        sector_num = idx + 1
 
-#기본위치
-sec_0 = db.reference('sector_0') #
-sec_1 = db.reference('sector_1') #
-sec_2 = db.reference('sector_2') #
-sec_3 = db.reference('sector_3') #
+def db_chk():
+    global x1, y1, x2, y2, x3, y3, s1_pm100, s2_pm100, s3_pm100, sector_num
 
-#ref.update({'test' : 'chk'}) #
+    #자표변수
+    s1 = db.reference('u_data/pose/s1') #-4 -1
+    s2 = db.reference('u_data/pose/s2') #3 1
+    s3 = db.reference('u_data/pose/s3') #0 -2
 
-print(sec_0.get())
-sec_0_x, sec_0_y = sec_0.get().split()
-sec_1_x, sec_1_y = sec_1.get().split()
-sec_2_x, sec_2_y = sec_2.get().split()
-sec_3_x, sec_3_y = sec_3.get().split()
+    x1, y1 = map(float, s1.get().split())
+    x2, y2 = map(float, s2.get().split())
+    x3, y3 = map(float, s3.get().split())
 
+    #미세먼지 변수
+    pm1 = db.reference('u_data/pm/s1')
+    pm2 = db.reference('u_data/pm/s2')
+    pm3 = db.reference('u_data/pm/s3')
 
-def send_msg():
+    s1_pm25, s1_pm100 = map(float, pm1.get().split())
+    s2_pm25, s2_pm100 = map(float, pm2.get().split())
+    s3_pm25, s3_pm100 = map(float, pm3.get().split())
+
+def pose_msg():
+    global x1, y1, x2, y2, x3, y3, sector_num
+
+    #퍼블리셔 및 메시지 생성
+    pub_pose = rospy.Publisher("pose", Msg, queue_size=1000)
+    msg = Msg()
+
     #노드 초기화
-    pub = rospy.Publisher('chatter', Float32, queue_size=10)
-    rospy.init_node('send_msg', anonymous = True)
-    #메시지를 보내는 주기 -> 30분?
-    rate = rospy.Rate(10) # 10hz - > 초당 10번
+    rospy.init_node('pose_msg', anonymous = True)
 
-    #노드가 꺼지지 않을때 까지 반복
+    #1초에 10번씩 수행
+    rate = rospy.Rate(10)
     while not rospy.is_shutdown():
-        test_number = -4.0
-        rospy.loginfo('-4.0을 보낸다')
-        pub.publish(test_number)
+        #db값 체크
+        db_chk()
+        sector_chk()
+        msg.x1 = x1
+        msg.y1 = y1
+        msg.x2 = x2
+        msg.y2 = y2
+        msg.x3 = x3
+        msg.y3 = y3
+        msg.sector_number = sector_num
+        
+        #값 확인
+        # rospy.loginfo(msg.x1)
+        # rospy.loginfo(msg.y1)
+        # rospy.loginfo(msg.x2)
+        # rospy.loginfo(msg.y2)
+        # rospy.loginfo(msg.x3)
+        # rospy.loginfo(msg.y3)
+        rospy.loginfo("sengind")
+
+        #값 퍼블리셔
+        pub_pose.publish(msg)
+
         rate.sleep()
 
 if __name__ == '__main__':
     try:
-        send_msg()
-    except rospy.ROSInterruptExcettion:
+        rospy.loginfo("pose_msg")
+        pose_msg()
+    except rospy.ROSInterruptException:
         pass

@@ -1,0 +1,15 @@
+#DB
+u_data
+  s1_pose : x y
+  s2_pose : x y
+  s3_pose : x y
+
+  s1 : pm25 pm100
+  s2 : pm25 pm100
+  s3 : pm25 pm100
+
+  km : 0 or 1
+
+#체크해야할것
+-이동중이거나 활동중일때는 좌표를 바꾸지 말게
+
