@@ -102,38 +102,8 @@ def call_test(odom):
     r_late.sleep()
 
 #store_pose
-def store_pose():
-	global pose
-	global past
-    global past_num
-	global cnt
-
-	if cnt == 0:
-		if flag2==0:
-			copy_pose = copy.copy(pose)	# store the place coordinate which turtlebot must avoid
-			past.append(copy_pose)		# ex) entrance of tunnel
-			past_number.append(0)
-			num = num+1
-			flag2 = 1
 
 #past pose check
-def past_check():
-    global pose
-    global past
-    global past_num
-    global cnt
-    for i in range(0, len(pasr)):
-        X = abs(pose[0] - past[i][0])
-        Y = abs(pose[1] - past[i][1])
-
-        if X>0.1 and Y>0.1:
-            past_num[i] = 1 #?
-
-        if X<0.1 and Y<0.1: #좌표가 왔던곳이라면
-            if past_num[i] == 1: #
-                rospy.loginfo([X, Y])
-                pase_num[i] = 0
-    return 0;
 
 #################################################################################################################################
 #same place rotation
