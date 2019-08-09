@@ -5,6 +5,12 @@ import rospy
 from geometry_msgs.msg import Twist
 
 pub = rospy.Publisher('/cmd_vel', Twist, queue_size=5)
+
+lastError = 0
+MAX_VEL = 0.13
+left_x = 0
+right_x = 0
+
 def t_move(linear, angular):
     twist=Twist()
     twist.linear.x=linear
@@ -17,9 +23,12 @@ def b_clean(video):
 
 if __name__ == '__main__':
     rospy.init_node('line_test')
-    video = cv2.VideoCapture(0)
-    video.set(3, 640)
-    video.set(4, 480)
+    video = cv2.VideoCapture(-1)
+    #video.set(cv2.CAP_PROP_IOS_DEVICE_WHITEBALANCE, 5000000000)
+    #video.awb_mode = 'off'
+
+    video.set(3, 480)
+    video.set(4, 720)
     while True:
         ret, orig_frame = video.read()
         if not ret:
@@ -27,12 +36,17 @@ if __name__ == '__main__':
             continue
 
         draw_temp = orig_frame.copy()
+	cuttingImg = draw_temp[250:, :]
+	draw_temp = cuttingImg
+	M = np.ones(draw_temp.shape, dtype="uint8") * 50
+	draw_temp = cv2.subtract(draw_temp, M)
 
-        frame = cv2.GaussianBlur(orig_frame, (5, 5), 0)
+        frame = cv2.GaussianBlur(draw_temp, (5, 5), 0)
+	#frame = frame - 30
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-        lower_yellow = np.array([18, 20, 190])
+        lower_yellow = np.array([18, 40, 140])
         upper_yellow = np.array([48, 255, 255])
         yellow_mask = cv2.inRange(hsv, lower_yellow, upper_yellow)
         yellow_mask = cv2.erode(yellow_mask, None, iterations=1)
@@ -68,9 +82,9 @@ if __name__ == '__main__':
 
         print('yellow ', y_theta)
 
-        sensitivity = 20
-        lower_white = np.array([0, 0, 255 - sensitivity])
-        upper_white = np.array([255, sensitivity, 255])
+        #sensitivity = 3
+        lower_white = np.array([0, 0, 150])
+        upper_white = np.array([255, 50, 255])
         white_mask = cv2.inRange(hsv, lower_white, upper_white)
         white_mask = cv2.erode(white_mask, None, iterations=1)
         white_mask = cv2.dilate(white_mask, None, iterations=1)
@@ -114,18 +128,22 @@ if __name__ == '__main__':
         lineThickness = 2
         cv2.line(draw_temp, (int(a_f/2-p*np.cos(ave_theta_real)), b_f+int(p*np.sin(ave_theta_real))), (int((a_f/2+p*np.cos(ave_theta_real))), b_f-int(p*np.sin(ave_theta_real))), (0, 255, 0), lineThickness)
         # cv2.line(draw_temp, (int(a_f/2-p*np.sin(ave_theta)), b_f+int(p*np.cos(ave_theta))), (int((a_f/2+p*np.sin(ave_theta))), b_f-int(p*np.cos(ave_theta))), (0, 255, 0), lineThickness)
+		
+		
+        error  = ave_theta - 85
+        print(error, " is error")
+        Kp = 0.006
+        Kd = 0.007
 
-        if ave_theta >= 95:
-            print("left")
-            t_move(0.15, 0.2)
-        elif ave_theta <= 85:
-            print("right")
-            t_move(0.15, -0.2)
-        else:
-            print("go")
-            t_move(0.15, 0)
+        angular_z = Kp * error + Kd * (error - lastError)
+	print(angular_z, "is angular_z")
+        lastError = error
+        linear_x = min(MAX_VEL * ((1-abs(error) / 500 ) ** 2.2), 0.2)
+        print(linear_x, " is linear_x")
+        #angular_z = min(angular_z, 2.0) if angular_z<0 else max(angular_z, -2.0)
+        #print(angular_z, " is twist angular_z")
 
-
+        t_move(linear_x, angular_z)
 
         cv2.imshow('edges', draw_temp)
 

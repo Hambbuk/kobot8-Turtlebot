@@ -1,4 +1,3 @@
-# -*- coding: cp949 -*-
 # -*- coding: utf-8 -*- # 한글 주석쓰려면 이거 해야함
 import cv2  # opencv 사용
 import numpy as np
@@ -81,8 +80,8 @@ def hough_lines(img, rho, theta, threshold, min_line_len, max_line_gap):  # 허�
     return lines
 
 
-def weighted_img(img, initial_img, α=1, β=1., λ=0.):  # 두 이미지 operlap 하기
-    return cv2.addWeighted(initial_img, α, img, β, λ)
+def weighted_img(img, initial_img, a=1, b=1., c=0.):  # 두 이미지 operlap 하기
+    return cv2.addWeighted(initial_img, a, img, b, c)
 
 
 def get_fitline(img, f_lines):  # 대표선 구하기
@@ -99,7 +98,7 @@ def get_fitline(img, f_lines):  # 대표선 구하기
 
 
 if __name__ == '__main__':
-    cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture(-1)
     # cap.set(cv2.CAP_PROP_FRAME_WIDTH, 320)
     # cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 160)
     cap.set(5, 60)
