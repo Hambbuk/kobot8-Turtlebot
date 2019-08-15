@@ -8,7 +8,7 @@ video = cv2.VideoCapture(2)
 while True:
     ret, orig_frame = video.read()
     if not ret:
-        video = cv2.VideoCapture(0)
+        video = cv2.VideoCapture(-1)
         continue
 
     draw_temp = orig_frame.copy()
@@ -78,11 +78,11 @@ while True:
 
 
     if ave_theta >= 95:
-        print("좌측 회전")
+        print("left")
     elif ave_theta <= 85:
-        print("우측 회전")
+        print("right")
     else:
-        print("직진")
+        print("straight")
 
 
     cv2.imshow('edges', draw_temp)

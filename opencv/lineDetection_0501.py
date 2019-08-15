@@ -53,7 +53,7 @@ def b_clean(video):
 
 
 if __name__ == '__main__':
-    video = cv2.VideoCapture(0)
+    video = cv2.VideoCapture(-1)
     b_clean(video)
 
     video.set(3, 320)
@@ -66,21 +66,24 @@ if __name__ == '__main__':
         if not ret:
             video = cv2.VideoCapture(0)
             continue
+        draw_temp = orig_frame.copy()
+        cuttingImg = draw_temp[150:, :]
+        draw_temp = cuttingImg
+        M = np.ones(draw_temp.shape, dtype="uint8") * 30
+        draw_temp = cv2.subtract(draw_temp, M)
 
-
-        frame = cv2.GaussianBlur(orig_frame, (5, 5), 0)
+        frame = cv2.GaussianBlur(draw_temp, (5, 5), 0)
         # frame = frame[70:150, 0:320]
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-        # gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
         # yellow_line(frame)
         # white_line(frame)
 
         # white detection
 
-        sensitivity = 10
-        low_white = np.array([0, 0, 255 - sensitivity])
-        up_white = np.array([255, sensitivity, 255])
+        low_white = np.array([0, 0, 150])
+        up_white = np.array([255, 50, 255])
         w_mask = cv2.inRange(hsv, low_white, up_white)
         edges = cv2.Canny(w_mask, 75, 150)
 
@@ -92,8 +95,8 @@ if __name__ == '__main__':
         # ]
 
         if lines1 is not None:
-            w_data1.clear()
-            w_data2.clear()
+            #w_data1.clear()
+            #w_data2.clear()
 
             for i in range(len(lines1)):
 
@@ -117,16 +120,16 @@ if __name__ == '__main__':
             print("previous w: ", w_data1, "\t", w_data2)
 
         # yellow detection
-        low_yellow = np.array([18, 20, 190])
-        up_yellow = np.array([48, 255, 255])
+        low_yellow = np.array([20, 100, 50])
+        up_yellow = np.array([35, 255, 255])
         y_mask = cv2.inRange(hsv, low_yellow, up_yellow)
         edges = cv2.Canny(y_mask, 75, 150)
 
         lines1 = cv2.HoughLinesP(edges, 1, np.pi / 180, 50, maxLineGap=50)
 
         if lines1 is not None:
-            y_data1.clear()
-            y_data2.clear()
+            #y_data1.clear()
+            #y_data2.clear()
             for i in range(len(lines1)):
                 x1 = lines1[i][0][0]
                 y1 = lines1[i][0][1]
@@ -157,5 +160,3 @@ if __name__ == '__main__':
     video.release()
     cv2.destroyAllWindows()
 
-# yellow에서 허프라인p 좌표의 최댓값을 가져온다.
-# 그리고 그 좌표로 선을 그린다.

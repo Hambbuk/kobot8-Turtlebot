@@ -1,8 +1,20 @@
-# -*- coding: cp949 -*-
 # -*- coding: utf-8 -*- # 한글 주석쓰려면 이거 해야함
 import cv2  # opencv 사용
 import numpy as np
+import rospy
+from geometry_msgs.msg import Twist
 
+pub = rospy.Publisher('/cmd_vel', Twist, queue_size=5)
+lastError = 0
+MAX_VEL = 0.12
+left_x = 0
+right_x = 0
+
+def t_move(linear, angular):
+    twist=Twist()
+    twist.linear.x=linear
+    twist.angular.z=angular
+    pub.publish(twist)
 
 def grayscale(img):  # 흑백이미지로 변환
     return cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
@@ -80,8 +92,8 @@ def hough_lines(img, rho, theta, threshold, min_line_len, max_line_gap):  # 허�
     return lines
 
 
-def weighted_img(img, initial_img, α=1, β=1., λ=0.):  # 두 이미지 operlap 하기
-    return cv2.addWeighted(initial_img, α, img, β, λ)
+def weighted_img(img, initial_img, a=1, b=1., c=0.):  # 두 이미지 operlap 하기
+    return cv2.addWeighted(initial_img, a, img, b, c)
 
 
 def get_fitline(img, f_lines):  # 대표선 구하기
@@ -98,10 +110,11 @@ def get_fitline(img, f_lines):  # 대표선 구하기
 
 
 if __name__ == '__main__':
-    cap = cv2.VideoCapture(0)
+    rospy.init_node('line_test')
+    cap = cv2.VideoCapture(-1)
     # cap.set(cv2.CAP_PROP_FRAME_WIDTH, 320)
     # cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 160)
-    cap.set(5, 60)
+    
     height, width = int(cap.get(4)), int(cap.get(3))
 
     i = 0
@@ -112,6 +125,13 @@ if __name__ == '__main__':
         ret, image = cap.read()
         ret, image = cap.read()
         ret, image = cap.read()
+
+        draw_temp = image.copy()
+        cuttingImg = draw_temp[350:,:]
+        draw_temp = cuttingImg
+        M = np.ones(draw_temp.shape, dtype="uint8") *20
+        draw_temp = cv2.subtract(draw_temp, M)
+
 
         print(i)
         i+=1
@@ -124,7 +144,7 @@ if __name__ == '__main__':
 
 
             try:
-                gray_img = grayscale(image)  # 흑백이미지로 변환
+                gray_img = grayscale(draw_temp)  # 흑백이미지로 변환
 
                 blur_img = gaussian_blur(gray_img, 3)  # Blur 효과
 
@@ -164,12 +184,40 @@ if __name__ == '__main__':
                 draw_cross_line(temp, left_fit_line, right_fit_line)
 
                 result = weighted_img(temp, image)  # 원본 이미지에 검출된 선 overlap
+                error = ave_theta - 87.5
+                print(ave_theta, " ave_theta")
+                Kp = 0.006	
+                Kd = 0.0085
+		
+                angular_z = Kp * error + Kd * (error - lastError)
+                print(angular_z, "is angular_z")
+                lastError = error
+                linear_x = min(MAX_VEL * ((1 - abs(error) / 500) ** 2.2), 0.2)
+                print(linear_x, " is linear_x")
+                angular_z = min(angular_z, 2.0) if angular_z<0 else max(angular_z, -2.0)
+                print(angular_z, " is twist angular_z")
+		
+                t_move(linear_x, angular_z)
                 cv2.imshow('result', result)  # 결과 이미지 출력
 
 
             except:
-                print("err")
-                pass
+                center_x = (left_x + right_x)/2
+                center = center_x
+                #print(center)
+                error  = center
+                print(error, " is error")
+                Kp = 0.0020
+                Kd = 0.010
+
+                angular_z = Kp * error + Kd * (error - lastError)
+                lastError = error
+                linear_x = min(MAX_VEL * ((1-abs(error) / 500 ) ** 2.2), 0.2)
+                print(linear_x, " is linear_x")
+                angular_z = -max(angular_z, -2.0) if angular_z<0 else -min(angular_z, 2.0)
+                print(angular_z, " is angular_z")
+
+                t_move(linear_x, angular_z)
 
             k = cv2.waitKey(1) & 0xFF
 
