@@ -2,6 +2,8 @@ import cv2
 import numpy as np
 
 video = cv2.VideoCapture(2)
+w_list = []
+y_list = []
 
 while True:
     ret, orig_frame = video.read()
@@ -30,12 +32,19 @@ while True:
 
     f_list = []
     if lines is not None:
+        y_list.clear()
         for line in lines:
             x1, y1, x2, y2 = line[0]
             f_list.append((x1,y1))
             f_list.append((x2,y2))
+
+            y_list.append([(x1, y1),(x2, y2)])
         cv2.circle(frame, max(f_list), 10, (0,0,255), -1)
         cv2.line(frame, (x1, y1), (x2, y2), (0, 255, 0), 4)
+    else:
+        print(y_list[-1][0])
+        print(y_list[-1][1])
+
 
     lower_white = np.array([0, 0, 150])
     upper_white = np.array([255, 50, 255])
@@ -46,12 +55,22 @@ while True:
     s_list = []
     lines = cv2.HoughLinesP(edges, 1, np.pi / 360, 100,100, maxLineGap=50)
     if lines is not None:
+        w_list.clear()
         for line in lines:
             x1, y1, x2, y2 = line[0]
             s_list.append((x1,y1))
             s_list.append((x2,y2))
+
+            w_list.append([(x1, y1), (x2, y2)])
+
+        (x,y) = min(s_list)
         cv2.circle(frame, min(s_list), 10, (255,255,0), -1)
         cv2.line(frame, (x1, y1), (x2, y2), (0, 0, 255), 4)
+    else:
+        print(w_list[-1][0])
+        print(w_list[-1][1])
+
+
 
     # cv2.line(frame, ((w_x1+y_x1)//2, (w_y1+y_y1)//2),((w_x2+y_x2)//2,(y_y2+w_y2)//2),(0, 255, 255), 4)
     cv2.imshow("frame", frame)
