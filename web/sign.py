@@ -6,7 +6,6 @@ import cv2
 import rospy
 import numpy as np
 from std_msgs.msg import Int8
-import sinho
 
 #(0=신호, 1=left, 2=right, 3=공사, 4=주차, 5=차단바, 6=터널, 100=라인트레이싱)
 
@@ -44,8 +43,7 @@ def _main(frame):
         stage = -1
 
         M = np.ones(frame.shape, dtype="uint8") * 90
-        sinho.traffic_light(frame)
-
+    
         copy_frame1 = frame.copy()
         copy_frame2 = frame.copy()
         copy_frame3 = frame.copy()
