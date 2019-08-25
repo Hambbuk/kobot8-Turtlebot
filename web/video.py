@@ -6,6 +6,7 @@ from std_msgs.msg import Int8
 from geometry_msgs.msg import Twist
 
 pub = rospy.Publisher('/cmd_vel', Twist, queue_size=5)
+pub_linear = rospy.Publish('
 lastError = 0
 MAX_VEL = 0.12
 global flag
