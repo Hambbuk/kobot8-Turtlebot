@@ -19,6 +19,8 @@ s_list = [(999, 999)]
 frame_count_w = 0
 frame_count_y = 0
 
+cnt = 0
+
 while True:
     frame_count_w += 1
     frame_count_y += 1
@@ -26,8 +28,11 @@ while True:
     if not ret:
         video = cv2.VideoCapture(0)
         continue
-
-    sinho.traffic_light(orig_frame)
+    
+    if cnt == 0:
+        sinho.traffic_light(orig_frame)
+        print("sinho test")
+        cnt += 1
     
     sign._main(orig_frame)
     draw_temp = orig_frame.copy()
