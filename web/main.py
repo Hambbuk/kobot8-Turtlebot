@@ -8,6 +8,8 @@ from std_msgs.msg import Float64
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import LaserScan
 global stage
+global linear
+global angular
 stage = -1 #(0=신호, 1=삼거리-left, 2=삼거리-right, 3=공사, 4=주차, 5=차단바, 6=터널, 100=라인트레이싱)
 pub = rospy.Publisher('cmd_vel', Twist, queue_size=5)
 
@@ -25,24 +27,21 @@ def avg(data):
 def SinHo(sinho_msg):
     global stage
     #초록불을 받았다면
-    if(sinho_msg.data == 1):
-        print("sinho")
-        stage = 100
+    print("sinho")
+    stage = 100
 
 ############################################################################################################3
 
-def SamGeoRi(samgeori_msg):
+def SamGeoRi_left():
     global stage
     #왼쪽간판
-    if(samgeori_msg.data == 1):
-        stage = 1
-        print("1")
-        t_move(0, 0)
+    print("left")
+    t_move(0, 0)
+    
+def SamGeoRi_right():
     #오른쪽간판
-    elif(samgeori_msg.data == 2):
-        stage = 2
-        print("2")
-        t_move(0, 0)
+    print("right")
+    t_move(0, 0)
 
 ############################################################################################################3
 
@@ -74,48 +73,77 @@ def GongSa_move(data):
 def GongSa(gongsa_msg):
     global stage
     #공사모드에 진입
-    if(gongsa_msg.data == 3):
-        stage = 3
-        print("3")
-        #rospy하드코딩하는 부분
-        GongSa_move()
+    stage = 3
+    print("GongSa")
+    #rospy하드코딩하는 부분
+    GongSa_move()
 
 ############################################################################################################3
 
 def JuCha(jucha_msg):
     global stage
-    if(jucha_msg.data == 4):
-        stage = 4
+    stage = 4
+    print("JuCha")
         #rospy하드코딩하는 부분
 
 ############################################################################################################3
 
-def ChaDanBar(chadanbar_msg):
+def ChaDanBar():
     global stage
-    if(chadanbar_msg.data == 5):
-        print("test")
+    print("ChaDanBar")
         #초음파 센서 받아서 사용하는 부분
 
 ############################################################################################################3
 
-def Tunnel(tunnel_msg):
+def Tunnel():
     global stage
     if(tunnel_msg.data == 6):
         stage = 6
         
 ############################################################################################################3
 
+def call_linear(linear_msg):
+    global linear
+    linear = linear_msg.data
+
+def call_angluar(angular_msg):
+    global linear
+    angular = angular_msg.data
+
+def stage_sel(stage):
+    global stage
+    call_linear()
+    call_angluar()
+
+    if stage == 0:
+        SinHo()
+
+    if stage == 1:
+        SamGeoRi_left()
+
+    if stage == 2:
+        SamGeoRi_right()
+
+#     if stage == 0:
+#         SinHo()
+
+#     if stage == 0:
+#         SinHo()
+
+#     if stage == 0:
+#         SinHo()
+
+    if stage == 100:
+        t_move(linear, angular)
+
 rospy.init_node('main_node')
 
 def linstener():
     while not rospy.is_shutdown():
-        rospy.Subscriber('/SinHo_msg', Int8, SinHo)
-        rospy.Subscriber('/stage', Int8, SamGeoRi)
-        rospy.Subscriber('/stage', Int8, GongSa)
-        #rospy.Subscriber("/scan" , LaserScan , GongSa_move)
-        #rospy.Subscriber('/stage', Int8, JuCha)
-    #rospy.Subscriber('/stage', Int8, ChaDanBar)
-    #rospy.Subscriber('/stage', Int8, Tunnel)
+        rospy.Subscriber('/stage', Int8, stage_sel)
+        rospy.Subscriber('/linear', Float64, call_linear)
+        rospy.Subscriber('/angular', Float64, call_angluar)
+        rospy.Subscriber("/scan" , LaserScan , GongSa_move)
         rospy.sleep(rospy.Duration(0.1))
         rospy.spin()
 
