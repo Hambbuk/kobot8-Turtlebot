@@ -29,7 +29,7 @@ def template_matching(frame,template,flag):
         if flag == 1:
             return flag
 
-if __name__ == '__main__':
+def _main(frame):
     rospy.init_node('cap_node', anonymous=True)
     
 
@@ -43,7 +43,6 @@ if __name__ == '__main__':
 
         stage = -1
 
-        _, frame = cap.read()
         M = np.ones(frame.shape, dtype="uint8") * 90
         sinho.traffic_light(frame)
 
