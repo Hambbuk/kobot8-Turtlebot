@@ -1,6 +1,8 @@
 import cv2
 import numpy as np
 import rospy
+import sign
+import sinho
 from std_msgs.msg import Float32
 pub_linear = rospy.Publish('linear', Float64, queue_size=5)
 pub_angular = rospy.Publish('angular', Float64, queue_size=5)
@@ -25,6 +27,9 @@ while True:
         video = cv2.VideoCapture(0)
         continue
 
+    sinho.traffic_light(orig_frame)
+    
+    sign._main(orig_frame)
     draw_temp = orig_frame.copy()
     cuttingImg = draw_temp[360:, :]
     y_ROI = draw_temp[360:, :250]
